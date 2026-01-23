@@ -90,7 +90,7 @@ export default function CalendarPage() {
             </div>
 
             {/* Sticky Calendar Strip - Updated to Circular Design */}
-            <div className="-mx-4 px-4 bg-white/80 backdrop-blur-sm sticky top-0 z-10 pb-2">
+            <div className="-mx-4 px-4  backdrop-blur-sm sticky top-0 z-10 pb-2">
                 <div
                     ref={scrollRef}
                     className="flex gap-3 overflow-x-auto hide-scrollbar pb-2 pt-2 px-2"
@@ -107,14 +107,14 @@ export default function CalendarPage() {
                                     setSelectedDate(date);
                                     if (navigator.vibrate) navigator.vibrate(5);
                                 }}
-                                className="flex-shrink-0 flex flex-col items-center gap-2 w-14 group"
+                                className="flex-shrink-0 flex flex-col items-center gap-2 w-14 group bg-white/80 p-3 rounded-2xl"
                             >
                                 <span className={`text-xs font-medium uppercase tracking-wider transition-colors
                                     ${isSelected ? 'text-blue-600 font-bold' : 'text-gray-400 group-hover:text-gray-600'}`}>
                                     {date.toLocaleDateString('en-US', { weekday: 'short' }).charAt(0)}
                                 </span>
 
-                                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 relative
+                                <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 relative
                                     ${isSelected
                                         ? 'bg-blue-600 text-white shadow-lg shadow-blue-200 scale-110'
                                         : 'bg-transparent text-gray-700 hover:bg-gray-50 hover:shadow-sm'}`}>
