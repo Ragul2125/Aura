@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Configure base URL (update this when you have your backend URL)
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://aura-2-uibt.onrender.com/api';
 
 // Create axios instance with auth interceptor
 const api = axios.create({

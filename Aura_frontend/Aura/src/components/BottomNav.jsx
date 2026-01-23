@@ -27,19 +27,19 @@ export default function BottomNav() {
                     icon={<Home size={22} />}
                     label="Home"
                     active={activeTab === "home"}
-                    onClick={() => handleNavigation("home", "/home")}
+                    onClick={() => handleNavigation("home", "home")}
                 />
 
                 <NavItem
                     icon={<GamepadDirectional size={22} />}
                     label="Activities"
                     active={activeTab === "activities"}
-                    onClick={() => handleNavigation("activities", "/activities")}
+                    onClick={() => handleNavigation("activities", "activities")}
                 />
 
                 {/* Center Button */}
                 <div
-                    onClick={() => handleNavigation("add", "/calendar")}
+                    onClick={() => handleNavigation("add", "calendar")}
                     className={`w-14 h-14 rounded-full flex items-center justify-center shadow-lg cursor-pointer
             ${activeTab === "add" ? "bg-blue-600" : "bg-[#0f73f7]"}`}
                 >
@@ -50,14 +50,14 @@ export default function BottomNav() {
                     icon={<Bell size={22} />}
                     label="Notification"
                     active={activeTab === "notifications"}
-                    onClick={() => handleNavigation("notifications", "/notifications")}
+                    onClick={() => handleNavigation("notifications", "notifications")}
                 />
 
                 <NavItem
                     icon={<User size={22} />}
                     label="Profile"
                     active={activeTab === "profile"}
-                    onClick={() => handleNavigation("profile", "/profile")}
+                    onClick={() => handleNavigation("profile", "profile")}
                 />
 
             </div>
