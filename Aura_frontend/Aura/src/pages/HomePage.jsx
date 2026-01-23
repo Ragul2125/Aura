@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { userDataStore } from "../utils/userDataStore.js";
+import { UserProfileService } from "../services/api.js";
+// import { userDataStore } from "../utils/userDataStore.js";
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
@@ -20,10 +21,22 @@ export default function HomePage() {
     ]);
 
     useEffect(() => {
-        // Load data
-        const data = userDataStore.getAllData();
-        setProfile(data.profile);
-        setCheckIns(data.checkins || []);
+        const fetchData = async () => {
+            try {
+                const response = await UserProfileService.getProfile();
+                if (response.success) {
+                    setProfile(response.data.profile);
+                }
+
+                const checkinsResponse = await UserProfileService.getDailyCheckIns();
+                if (checkinsResponse.success) {
+                    setCheckIns(checkinsResponse.data);
+                }
+            } catch (error) {
+                console.error("Failed to load home data", error);
+            }
+        };
+        fetchData();
 
         // Set greeting based on time
         const hour = new Date().getHours();

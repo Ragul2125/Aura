@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { userDataStore } from '../../utils/userDataStore.js';
+import { UserProfileService } from '../../services/api.js';
+// import { userDataStore } from '../../utils/userDataStore.js';
 import { X, Sun, Battery, Smile } from 'lucide-react';
 
 export default function DailyCheckInModal({ isOpen, onClose }) {
@@ -9,13 +10,19 @@ export default function DailyCheckInModal({ isOpen, onClose }) {
 
     if (!isOpen) return null;
 
-    const handleSubmit = () => {
-        userDataStore.addCheckIn({
-            energyLevel: energy,
-            mood: mood,
-            sleepQuality: sleepQuality
-        });
-        onClose();
+    const handleSubmit = async () => {
+        try {
+            await UserProfileService.addDailyCheckIn({
+                energyLevel: energy,
+                mood: mood,
+                sleepQuality: sleepQuality
+            });
+            onClose();
+        } catch (error) {
+            console.error("Failed to save check-in", error);
+            // Optional: Show error toast
+            onClose();
+        }
     };
 
     return (

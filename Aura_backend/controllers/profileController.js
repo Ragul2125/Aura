@@ -113,3 +113,35 @@ export const updateCycleOrEnergy = async (req, res) => {
         res.status(500).json({ success: false, error: error.message });
     }
 };
+
+/**
+ * Get Full User Profile (Aggregated)
+ */
+export const getUserProfile = async (req, res) => {
+    try {
+        const userId = req.user._id;
+
+        // Fetch all data in parallel
+        const [profile, sleep, mobility, tasks, female, male] = await Promise.all([
+            UserProfile.findOne({ userId }),
+            SleepRoutine.findOne({ userId }),
+            MobilityProfile.findOne({ userId }),
+            TaskPreference.findOne({ userId }),
+            FemaleCycle.findOne({ userId }),
+            MaleEnergyPattern.findOne({ userId })
+        ]);
+
+        // Construct response matching frontend structure
+        const responseData = {
+            profile,
+            sleep,
+            mobility,
+            tasks,
+            biological: profile?.biologicalSex === 'Female' ? female : male
+        };
+
+        res.status(200).json({ success: true, data: responseData });
+    } catch (error) {
+        res.status(500).json({ success: false, error: error.message });
+    }
+};

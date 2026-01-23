@@ -3,8 +3,10 @@ import cors from "cors";
 import connectDb from "./Config/db.js";
 import dotenv from "dotenv";
 import authRoutes from "./Router/authRoutes.js";
+
 import profileRoutes from "./Router/profileRoutes.js";
 import loggingRoutes from "./Router/loggingRoutes.js";
+import taskRoutes from "./Router/taskRoutes.js";
 import admin from "./firebaseAdmin.js";
 
 dotenv.config();
@@ -20,8 +22,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/profile", profileRoutes);
+app.use("/api/user", profileRoutes);
 app.use("/api/tracking", loggingRoutes);
+app.use("/api/tasks", taskRoutes);
 
 // FCM Token Storage Route
 app.post("/save-token", (req, res) => {

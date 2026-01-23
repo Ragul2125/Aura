@@ -20,6 +20,17 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
+export const AuthService = {
+    login: async (credentials) => {
+        const response = await api.post('/auth/login', credentials);
+        return response.data;
+    },
+    signup: async (userData) => {
+        const response = await api.post('/auth/signup', userData);
+        return response.data;
+    }
+};
+
 export const UserProfileService = {
     // Step 1: Basic Profile
     updateProfile: async (data) => {
@@ -55,6 +66,18 @@ export const UserProfileService = {
     // Daily Check-in
     addDailyCheckIn: async (data) => {
         const response = await api.post('/user/daily-checkin', data);
+        return response.data;
+    },
+
+    // New: Get all profile data
+    getProfile: async () => {
+        const response = await api.get('/user/profile');
+        return response.data; // Expects { success: true, data: { profile, sleep, ... } }
+    },
+
+    // New: Get check-in history
+    getDailyCheckIns: async () => {
+        const response = await api.get('/user/checkins');
         return response.data;
     }
 };

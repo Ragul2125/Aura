@@ -5,18 +5,26 @@ import {
     updateSleepRoutine,
     updateMobilityProfile,
     updateTaskPreferences,
-    updateCycleOrEnergy
+    updateCycleOrEnergy,
+    getUserProfile
 } from "../controllers/profileController.js";
+import { logDailyCheckIn, getDailyLogs } from "../controllers/loggingController.js";
 
 const router = express.Router();
 
 // All routes require authentication
 router.use(authMiddleware);
 
-router.post("/user-profile", updateUserProfile);
-router.post("/sleep-routine", updateSleepRoutine);
-router.post("/mobility-profile", updateMobilityProfile);
-router.post("/task-preference", updateTaskPreferences);
-router.post("/bio-specific", updateCycleOrEnergy);
+// Profile Routes (PUT for updates)
+router.get("/profile", getUserProfile); // New GET endpoint
+router.put("/profile", updateUserProfile);
+router.put("/sleep-routine", updateSleepRoutine);
+router.put("/mobility", updateMobilityProfile);
+router.put("/task-preferences", updateTaskPreferences);
+router.put("/biological", updateCycleOrEnergy);
+
+// Daily Check-in (POST & GET)
+router.post("/daily-checkin", logDailyCheckIn);
+router.get("/checkins", getDailyLogs); // New GET endpoint
 
 export default router;

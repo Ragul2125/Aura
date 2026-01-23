@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import './AuthPage.css'
 import logo from '../assets/logo.png'
 import { Navigate, useNavigate } from 'react-router-dom'
+import { AuthService } from '../services/api.js'
 const AuthPage = () => {
     const [isLogin, setIsLogin] = useState(true)
     const [formData, setFormData] = useState({
@@ -66,13 +67,46 @@ const AuthPage = () => {
 
     const navigate = useNavigate()
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault()
         if (validateForm()) {
-            // Handle form submission here
-            console.log('Form submitted:', formData)
-            alert(isLogin ? 'Login successful!' : 'Signup successful!')
-            navigate('/home')
+            try {
+                let response;
+                if (isLogin) {
+                    response = await AuthService.login({
+                        email: formData.email,
+                        password: formData.password
+                    });
+                } else {
+                    response = await AuthService.signup({
+                        name: formData.name,
+                        email: formData.email,
+                        password: formData.password
+                    });
+                }
+
+                if (response.success) {
+                    // Store token
+                    localStorage.setItem('authToken', response.token);
+                    // Store basic user info if needed
+                    if (response.user) {
+                        localStorage.setItem('aura_user_profile', JSON.stringify({
+                            ...response.user,
+                            // Preserve existing profile structure if possible or rely on fetch
+                            // But for now, just basic user info might be enough to pass "isOnboardingComplete" checks if we were using local storage check
+                            // actually, let's not write to aura_user_profile blindly to avoid overwriting full profile with partial data
+                        }));
+                    }
+
+                    alert(isLogin ? 'Login successful!' : 'Signup successful!');
+                    navigate('/home');
+                }
+            } catch (error) {
+                console.error("Auth error:", error);
+                const msg = error.response?.data?.message || 'Authentication failed';
+                setErrors(prev => ({ ...prev, form: msg }));
+                alert(msg); // Fallback for now if UI doesn't show general errors
+            }
         }
     }
 
@@ -86,7 +120,7 @@ const AuthPage = () => {
         })
         setErrors({})
     }
-    
+
     return (
         <div className="auth-container">
             <div className="auth-content">

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { userDataStore } from "../utils/userDataStore.js";
+import { UserProfileService } from "../services/api.js";
+import { userDataStore } from "../utils/userDataStore.js"; // Keeping for daily tasks
 import { Calendar as CalendarIcon, CheckCircle, ClipboardList, Battery, Smile, Moon } from "lucide-react";
 
 export default function CalendarPage() {
@@ -62,9 +63,18 @@ export default function CalendarPage() {
         setTasks(dailyTasks || []);
 
         // 2. Load Check-ins (Filter from full list)
-        const allCheckIns = userDataStore.getCheckIns();
-        const dailyCheckIns = allCheckIns.filter(log => log.date.startsWith(dateKey));
-        setCheckIns(dailyCheckIns);
+        const fetchCheckIns = async () => {
+            try {
+                const response = await UserProfileService.getDailyCheckIns();
+                if (response.success) {
+                    const dailyCheckIns = response.data.filter(log => log.date.startsWith(dateKey));
+                    setCheckIns(dailyCheckIns);
+                }
+            } catch (e) {
+                console.error("Failed to load calendar checkins", e);
+            }
+        };
+        fetchCheckIns();
 
     }, [selectedDate]);
 

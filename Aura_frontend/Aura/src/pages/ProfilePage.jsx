@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { userDataStore } from "../utils/userDataStore.js";
-import { User, Moon, Briefcase, Activity, Calendar, Clock, MapPin, Battery, Smile, TrendingUp } from "lucide-react";
+import { UserProfileService } from "../services/api.js";
+// import { userDataStore } from "../utils/userDataStore.js";
+import { User, Moon, Briefcase, Activity, Calendar, Clock, MapPin, Battery, Smile, TrendingUp, LogOut } from "lucide-react";
 
 export default function ProfilePage() {
     const [profile, setProfile] = useState(null);
@@ -14,21 +15,36 @@ export default function ProfilePage() {
     const [genderData, setGenderData] = useState(null);
 
     useEffect(() => {
-        // Load all data from store
-        const allData = userDataStore.getAllData();
-        setProfile(allData.profile);
-        setCheckIns(allData.checkins || []);
-        setSleepData(allData.sleep);
-        setMobilityData(allData.mobility);
-        setTaskData(allData.tasks);
+        const fetchData = async () => {
+            try {
+                const response = await UserProfileService.getProfile();
+                if (response.success) {
+                    const { profile, sleep, mobility, tasks, biological } = response.data;
+                    setProfile(profile);
+                    setSleepData(sleep);
+                    setMobilityData(mobility);
+                    setTaskData(tasks);
+                    setGenderData(biological);
+                }
 
-        // Determine gender key
-        if (allData.profile?.biologicalSex === 'Female') {
-            setGenderData(JSON.parse(localStorage.getItem('aura_female_cycle')));
-        } else if (allData.profile?.biologicalSex === 'Male') {
-            setGenderData(JSON.parse(localStorage.getItem('aura_male_energy')));
-        }
+                // Fetch check-ins
+                const checkinsResponse = await UserProfileService.getDailyCheckIns();
+                if (checkinsResponse.success)
+                    setCheckIns(checkinsResponse.data);
+
+            } catch (error) {
+                console.error("Failed to load profile", error);
+            }
+        };
+        fetchData();
     }, []);
+
+    const handleLogout = () => {
+
+        localStorage.clear();
+        userDataStore.clearAllData();
+        window.location.href = '/';
+    };
 
     if (!profile) {
         return (
@@ -176,6 +192,10 @@ export default function ProfilePage() {
                             </div>
                         </div>
                     )}
+                    <div className="bg-red-600 text-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center justify-between gap-2 cursor-pointer" onClick={handleLogout}>
+                        Logout
+                        <LogOut size={20} />
+                    </div>
                 </div>
             )}
 

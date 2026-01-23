@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { userDataStore } from '../../utils/userDataStore.js';
+import { UserProfileService } from '../../services/api.js';
+// import { userDataStore } from '../../utils/userDataStore.js';
 import { ArrowRight, ArrowLeft, Check, User, Activity, Moon, Briefcase, MapPin } from 'lucide-react';
 
 export default function OnboardingWizard({ onComplete }) {
@@ -55,51 +56,56 @@ export default function OnboardingWizard({ onComplete }) {
         if (step > 1) setStep(step - 1);
     };
 
-    const handleFinish = () => {
-        // 1. Save Profile
-        userDataStore.saveProfile({
-            ageRange: formData.ageRange,
-            biologicalSex: formData.biologicalSex,
-            occupationType: formData.occupationType,
-            workingHours: { start: formData.workStart, end: formData.workEnd },
-            goals: formData.goals
-        });
+    const handleFinish = async () => {
+        try {
+            // 1. Save Profile
+            await UserProfileService.updateProfile({
+                ageRange: formData.ageRange,
+                biologicalSex: formData.biologicalSex,
+                occupationType: formData.occupationType,
+                workingHours: { start: formData.workStart, end: formData.workEnd },
+                goals: formData.goals
+            });
 
-        // 2. Save Gender Specific
-        if (formData.biologicalSex === 'Female') {
-            userDataStore.saveGenderData('Female', {
-                cycleStartDate: formData.cycleStartDate,
-                averageCycleLength: formData.averageCycleLength,
-                symptoms: formData.symptoms
+            // 2. Save Gender Specific
+            await UserProfileService.updateBiologicalSpecifics({
+                type: formData.biologicalSex === 'Female' ? 'female' : 'male',
+                // Spread appropriate data
+                ...(formData.biologicalSex === 'Female' ? {
+                    cycleStartDate: formData.cycleStartDate,
+                    averageCycleLength: formData.averageCycleLength,
+                    symptoms: formData.symptoms
+                } : {
+                    stressLevel: formData.stressLevel,
+                    workoutFrequency: formData.workoutFrequency,
+                    energyCrashTime: formData.energyCrashTime
+                })
             });
-        } else if (formData.biologicalSex === 'Male') {
-            userDataStore.saveGenderData('Male', {
-                stressLevel: formData.stressLevel,
-                workoutFrequency: formData.workoutFrequency,
-                energyCrashTime: formData.energyCrashTime
+
+            // 3. Save Sleep
+            await UserProfileService.updateSleepRoutine({
+                averageSleepHours: formData.averageSleepHours,
+                sleepConsistency: formData.sleepConsistency,
+                peakAlertTime: formData.peakAlertTime
             });
+
+            // 4. Save Mobility & Tasks
+            await UserProfileService.updateMobility({
+                dailyCommuteMinutes: formData.dailyCommuteMinutes,
+                travelMode: formData.travelMode,
+                postTravelFatigue: formData.postTravelFatigue
+            });
+
+            await UserProfileService.updateTaskPreferences({
+                preferredTaskTypes: formData.preferredTaskTypes,
+                breakPreference: formData.breakPreference
+            });
+
+            onComplete();
+        } catch (error) {
+            console.error("Onboarding failed", error);
+            alert("Failed to save profile. Please try again.");
         }
-
-        // 3. Save Sleep
-        userDataStore.saveSleepRoutine({
-            averageSleepHours: formData.averageSleepHours,
-            sleepConsistency: formData.sleepConsistency,
-            peakAlertTime: formData.peakAlertTime
-        });
-
-        // 4. Save Mobility & Tasks
-        userDataStore.saveMobility({
-            dailyCommuteMinutes: formData.dailyCommuteMinutes,
-            travelMode: formData.travelMode,
-            postTravelFatigue: formData.postTravelFatigue
-        });
-
-        userDataStore.saveTaskPrefs({
-            preferredTaskTypes: formData.preferredTaskTypes,
-            breakPreference: formData.breakPreference
-        });
-
-        onComplete();
     };
 
     // Render Steps

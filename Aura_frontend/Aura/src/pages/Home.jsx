@@ -6,8 +6,10 @@ import { LogOut, PlusCircle, RefreshCw } from "lucide-react";
 
 // Forms
 import OnboardingWizard from "../components/forms/OnboardingWizard.jsx";
+
 import DailyCheckInModal from "../components/forms/DailyCheckInModal.jsx";
-import { userDataStore } from "../utils/userDataStore.js";
+import { UserProfileService } from "../services/api.js";
+// import { userDataStore } from "../utils/userDataStore.js";
 
 export default function Home() {
     // FCM token generation runs silently in the background
@@ -21,9 +23,15 @@ export default function Home() {
         checkOnboarding();
     }, []);
 
-    const checkOnboarding = () => {
-        const isComplete = userDataStore.isOnboardingComplete();
-        if (!isComplete) {
+    const checkOnboarding = async () => {
+        try {
+            const response = await UserProfileService.getProfile();
+            // If we get a profile and it has basic info, we assume onboarding is done
+            if (!response.success || !response.data?.profile) {
+                setTimeout(() => setShowOnboarding(true), 1000);
+            }
+        } catch (error) {
+            // If 401 or 404, implies need onboarding
             setTimeout(() => setShowOnboarding(true), 1000);
         }
     };
