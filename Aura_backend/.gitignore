@@ -1,0 +1,7 @@
+.env
+# Firebase / Google secrets
+serviceAccountKey.json
+*.key.json
+
+# Env files
+.env
