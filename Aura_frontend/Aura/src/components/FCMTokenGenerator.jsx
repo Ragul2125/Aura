@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import requestPermission from '../utils/requestPermission ';
+import requestPermission from '../utils/requestPermission.js';
 
 /**
  * FCM Token Generator Component

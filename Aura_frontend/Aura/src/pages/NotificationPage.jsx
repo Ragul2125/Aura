@@ -6,7 +6,7 @@ import {
     markAsRead,
     deleteNotification,
     clearAllNotifications
-} from "../utils/notificationUtils";
+} from "../utils/notificationUtils.js";
 
 export default function NotificationPage() {
     const [notifications, setNotifications] = useState([]);

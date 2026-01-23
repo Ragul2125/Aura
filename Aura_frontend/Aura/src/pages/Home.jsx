@@ -1,13 +1,13 @@
 import { useRef, useState, useEffect } from "react";
 import { Outlet } from "react-router-dom";
-import BottomNav from "../components/BottomNav";
-import { useFCMToken } from "../hooks/useFCMToken";
+import BottomNav from "../components/BottomNav.jsx";
+import { useFCMToken } from "../hooks/useFCMToken.js";
 import { LogOut, PlusCircle, RefreshCw } from "lucide-react";
 
 // Forms
-import OnboardingWizard from "../components/forms/OnboardingWizard";
-import DailyCheckInModal from "../components/forms/DailyCheckInModal";
-import { userDataStore } from "../utils/userDataStore";
+import OnboardingWizard from "../components/forms/OnboardingWizard.jsx";
+import DailyCheckInModal from "../components/forms/DailyCheckInModal.jsx";
+import { userDataStore } from "../utils/userDataStore.js";
 
 export default function Home() {
     // FCM token generation runs silently in the background

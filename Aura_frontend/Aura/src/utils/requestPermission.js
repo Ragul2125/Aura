@@ -1,5 +1,5 @@
 import { getToken } from "firebase/messaging";
-import { messaging } from "../../firebase";
+import { messaging } from "../../firebase.js";
 
 const VAPID_KEY = "BIyFc5xDz5YPtgUb3UZKeq3i788fXVyqveWkBKGrcKMzeKWVeKvwC-mCu6Au64IfYL-zgPF-X5VIhV-Ld-N_IPU";
 const FCM_TOKEN_KEY = "fcmToken";

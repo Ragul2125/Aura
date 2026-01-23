@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import requestPermission, { getStoredToken, hasNotificationPermission } from '../utils/requestPermission';
+import requestPermission, { getStoredToken, hasNotificationPermission } from '../utils/requestPermission.js';
 
 /**
  * Custom hook for automatic FCM token management

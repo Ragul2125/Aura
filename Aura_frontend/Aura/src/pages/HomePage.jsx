@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { userDataStore } from "../utils/userDataStore";
+import { userDataStore } from "../utils/userDataStore.js";
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';

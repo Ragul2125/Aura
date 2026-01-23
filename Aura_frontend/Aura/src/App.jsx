@@ -1,11 +1,11 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Home from "./pages/Home";
-import HomePage from "./pages/HomePage";
-import ActivitiesPage from "./pages/ActivitiesPage";
-import NotificationPage from "./pages/NotificationPage";
-import ProfilePage from "./pages/ProfilePage";
-import CalendarPage from "./pages/CalendarPage";
-import AuthPage from "./components/authPage";
+import Home from "./pages/Home.jsx";
+import HomePage from "./pages/HomePage.jsx";
+import ActivitiesPage from "./pages/ActivitiesPage.jsx";
+import NotificationPage from "./pages/NotificationPage.jsx";
+import ProfilePage from "./pages/ProfilePage.jsx";
+import CalendarPage from "./pages/CalendarPage.jsx";
+import AuthPage from "./components/authPage.jsx";
 
 export default function App() {
   return (

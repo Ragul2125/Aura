@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { userDataStore } from '../../utils/userDataStore';
+import { userDataStore } from '../../utils/userDataStore.js';
 import { ArrowRight, ArrowLeft, Check, User, Activity, Moon, Briefcase, MapPin } from 'lucide-react';
 
 export default function OnboardingWizard({ onComplete }) {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { userDataStore } from "../utils/userDataStore";
+import { userDataStore } from "../utils/userDataStore.js";
 import { User, Moon, Briefcase, Activity, Calendar, Clock, MapPin, Battery, Smile, TrendingUp } from "lucide-react";
 
 export default function ProfilePage() {

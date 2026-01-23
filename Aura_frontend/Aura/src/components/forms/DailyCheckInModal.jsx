@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { userDataStore } from '../../utils/userDataStore';
+import { userDataStore } from '../../utils/userDataStore.js';
 import { X, Sun, Battery, Smile } from 'lucide-react';
 
 export default function DailyCheckInModal({ isOpen, onClose }) {

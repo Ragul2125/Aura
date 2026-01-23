@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { userDataStore } from "../utils/userDataStore";
+import { userDataStore } from "../utils/userDataStore.js";
 import { Calendar as CalendarIcon, CheckCircle, ClipboardList, Battery, Smile, Moon } from "lucide-react";
 
 export default function CalendarPage() {

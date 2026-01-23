@@ -1,5 +1,5 @@
 import { onMessage } from "firebase/messaging";
-import { messaging } from "../../firebase";
+import { messaging } from "../../firebase.js";
 import {
     getStoredNotifications as getFromDB,
     saveNotification as saveToDB,
