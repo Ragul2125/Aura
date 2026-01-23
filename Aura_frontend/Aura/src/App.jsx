@@ -5,7 +5,7 @@ import ActivitiesPage from "./pages/ActivitiesPage.jsx";
 import NotificationPage from "./pages/NotificationPage.jsx";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import CalendarPage from "./pages/CalendarPage.jsx";
-import AuthPage from "./components/authPage.jsx";
+import AuthPage from "./components/AuthPage.jsx";
 
 export default function App() {
   return (
