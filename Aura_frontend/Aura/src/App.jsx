@@ -12,10 +12,12 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         {/* Auth Route - Standalone Page */}
-        <Route path="/auth" element={<AuthPage />} />
+        <Route path="/login" element={<AuthPage />} />
+        <Route path="/" element={<AuthPage />} />
+
 
         {/* Protected Routes - Wrapped in Home Layout */}
-        <Route path="/" element={<Home />}>
+        <Route path="/home" element={<Home />}>
           {/* Default redirect to home or auth based on status */}
           <Route index element={<Navigate to="/home" replace />} />
 
