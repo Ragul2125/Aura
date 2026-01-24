@@ -176,7 +176,7 @@ export default function ActivitiesPage() {
     }
 
     return (
-        <div className="pt-20 p-4 flex flex-col justify-center gap-6">
+        <div className="h-screen pt-20 p-4 flex flex-col justify-center gap-6">
             <div className="flex items-center gap-3 mb-2">
                 <div className="p-3 bg-orange-100 rounded-2xl text-orange-600">
                     <HelpCircle size={24} />
