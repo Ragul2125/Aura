@@ -114,7 +114,7 @@ export default function ActivitiesPage() {
             const answersArray = questions.map(q => answers[q.id] || "");
 
             const response = await axios.post(
-                "https://43eea8a55141.ngrok-free.app/submit_answers",
+                "https://f4f6e1c115bb.ngrok-free.app/submit_answers",
                 {
                     user_id: userId,
                     answers: answersArray
