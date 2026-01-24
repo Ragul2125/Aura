@@ -8,11 +8,14 @@ import DailyCheckIn from "../model/DailyCheckIn.js";
  */
 export const seedDemoData = async (req, res) => {
     try {
+        console.log("Seed demo data called for user:", req.user._id);
         const userId = req.user._id;
 
         // Clear existing data for this user
-        await Task.deleteMany({ userId });
-        await DailyCheckIn.deleteMany({ userId });
+        console.log("Deleting existing tasks and check-ins...");
+        const deletedTasks = await Task.deleteMany({ userId });
+        const deletedCheckIns = await DailyCheckIn.deleteMany({ userId });
+        console.log(`Deleted ${deletedTasks.deletedCount} tasks and ${deletedCheckIns.deletedCount} check-ins`);
 
         const demoTasks = [];
         const demoCheckIns = [];
@@ -143,8 +146,10 @@ export const seedDemoData = async (req, res) => {
         }
 
         // Insert all demo data
-        await Task.insertMany(demoTasks);
-        await DailyCheckIn.insertMany(demoCheckIns);
+        console.log(`Inserting ${demoTasks.length} tasks and ${demoCheckIns.length} check-ins...`);
+        const insertedTasks = await Task.insertMany(demoTasks);
+        const insertedCheckIns = await DailyCheckIn.insertMany(demoCheckIns);
+        console.log(`Successfully inserted ${insertedTasks.length} tasks and ${insertedCheckIns.length} check-ins`);
 
         res.status(201).json({
             success: true,
@@ -167,6 +172,12 @@ export const seedDemoData = async (req, res) => {
             }
         });
     } catch (error) {
-        res.status(500).json({ success: false, error: error.message });
+        console.error("Seed demo data error:", error);
+        console.error("Error stack:", error.stack);
+        res.status(500).json({
+            success: false,
+            error: error.message,
+            details: error.stack
+        });
     }
 };

@@ -10,8 +10,10 @@ const authMiddleware = async (req, res, next) => {
     try {
         // Get token from header
         const authHeader = req.headers.authorization;
+        console.log("Auth middleware - Authorization header:", authHeader ? "Present" : "Missing");
 
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            console.log("Auth middleware - No valid Bearer token in header");
             return res.status(401).json({
                 success: false,
                 message: "Access denied. No token provided.",
@@ -22,33 +24,43 @@ const authMiddleware = async (req, res, next) => {
         const token = authHeader.split(" ")[1];
 
         if (!token) {
+            console.log("Auth middleware - Token extraction failed");
             return res.status(401).json({
                 success: false,
                 message: "Access denied. Invalid token format.",
             });
         }
 
+        console.log("Auth middleware - Token extracted, verifying...");
+
         // Verify token
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        console.log("Auth middleware - Token verified, userId:", decoded.userId);
 
         // Get user from database (excluding password)
         const user = await User.findById(decoded.userId).select("-password");
 
         if (!user) {
+            console.log("Auth middleware - User not found for userId:", decoded.userId);
             return res.status(401).json({
                 success: false,
                 message: "User not found. Token is invalid.",
             });
         }
 
+        console.log("Auth middleware - User authenticated:", user._id);
+
         // Attach user to request object
         req.user = user;
         next();
     } catch (error) {
+        console.error("Auth middleware error:", error.message);
+
         if (error.name === "JsonWebTokenError") {
             return res.status(401).json({
                 success: false,
                 message: "Invalid token.",
+                details: error.message
             });
         }
 
@@ -56,6 +68,7 @@ const authMiddleware = async (req, res, next) => {
             return res.status(401).json({
                 success: false,
                 message: "Token has expired.",
+                details: error.message
             });
         }
 
