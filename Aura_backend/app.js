@@ -7,6 +7,7 @@ import authRoutes from "./Router/authRoutes.js";
 import profileRoutes from "./Router/profileRoutes.js";
 import loggingRoutes from "./Router/loggingRoutes.js";
 import taskRoutes from "./Router/taskRoutes.js";
+import seedRoutes from "./Router/seedRoutes.js";
 import admin from "./firebaseAdmin.js";
 
 dotenv.config();
@@ -25,6 +26,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/user", profileRoutes);
 app.use("/api/tracking", loggingRoutes);
 app.use("/api/tasks", taskRoutes);
+app.use("/api/seed", seedRoutes);
 
 // FCM Token Storage Route
 app.post("/save-token", (req, res) => {

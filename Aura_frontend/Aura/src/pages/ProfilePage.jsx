@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { UserProfileService } from "../services/api.js";
+import MedicalUploadModal from "../components/MedicalUploadModal.jsx";
 // import { userDataStore } from "../utils/userDataStore.js";
-import { User, Moon, Briefcase, Activity, Calendar, Clock, MapPin, Battery, Smile, TrendingUp, LogOut } from "lucide-react";
+import { User, Moon, Briefcase, Activity, Calendar, Clock, MapPin, Battery, Smile, TrendingUp, LogOut, FileText } from "lucide-react";
 
 export default function ProfilePage() {
     const [profile, setProfile] = useState(null);
     const [checkIns, setCheckIns] = useState([]);
     const [activeTab, setActiveTab] = useState("overview"); // overview, checkins
+    const [showUploadModal, setShowUploadModal] = useState(false);
 
     // Derived state for other sections
     const [sleepData, setSleepData] = useState(null);
@@ -192,12 +194,30 @@ export default function ProfilePage() {
                             </div>
                         </div>
                     )}
-                    <div className="bg-red-600 text-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center justify-between gap-2 cursor-pointer" onClick={handleLogout}>
-                        Logout
+
+                    {/* Medical Document Upload */}
+                    <div
+                        className="bg-blue-600 text-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center justify-between gap-2 cursor-pointer hover:bg-blue-700 transition-colors"
+                        onClick={() => setShowUploadModal(true)}
+                    >
+                        <span className="font-semibold">Upload Medical Documents</span>
+                        <FileText size={20} />
+                    </div>
+
+                    {/* Logout Button */}
+                    <div className="bg-red-600 text-white rounded-2xl p-5 shadow-sm border border-gray-100 flex items-center justify-between gap-2 cursor-pointer hover:bg-red-700 transition-colors" onClick={handleLogout}>
+                        <span className="font-semibold">Logout</span>
                         <LogOut size={20} />
                     </div>
                 </div>
             )}
+
+            {/* Medical Upload Modal */}
+            <MedicalUploadModal
+                isOpen={showUploadModal}
+                onClose={() => setShowUploadModal(false)}
+                userId={profile?._id || localStorage.getItem('userId') || 'unknown'}
+            />
 
             {/* Content - Check-in History */}
             {activeTab === "checkins" && (

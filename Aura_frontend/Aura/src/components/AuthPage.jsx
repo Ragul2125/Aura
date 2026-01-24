@@ -88,6 +88,7 @@ const AuthPage = () => {
                 if (response.success) {
                     // Store token
                     localStorage.setItem('authToken', response.token);
+                    localStorage.setItem('userId', response.user.id);
                     // Store basic user info if needed
                     if (response.user) {
                         localStorage.setItem('aura_user_profile', JSON.stringify({

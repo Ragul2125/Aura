@@ -7,43 +7,42 @@ const taskSchema = new mongoose.Schema(
             ref: "User",
             required: true
         },
-        title: {
+        task: {
             type: String,
             required: true,
             trim: true
         },
-        description: {
-            type: String,
-            trim: true
-        },
         time: {
-            type: String, // e.g. "09:00" or ISO Date string
-            required: false // Optional, as some tasks might be backlog
-        },
-        duration: {
-            type: Number, // in minutes
-            default: 30
+            type: String, // e.g. "09:00 AM - 11:00 AM"
+            required: false
         },
         priority: {
             type: String,
             enum: ["Low", "Medium", "High"],
             default: "Medium"
         },
-        status: {
+        reason: {
             type: String,
-            enum: ["Pending", "In Progress", "Completed", "Skipped"],
-            default: "Pending"
+            default: "" // AI reasoning for task placement
         },
         aiSuggestion: {
             type: String,
-            default: "" // Reasoning from AI agent
+            default: "" // AI suggestion text
+        },
+        avoid: {
+            type: Boolean,
+            default: false
         },
         isAiGenerated: {
             type: Boolean,
             default: false
         },
+        completed: {
+            type: Boolean,
+            default: false
+        },
         date: {
-            type: String, // ISO Date string YYYY-MM-DD for simple filtering
+            type: String, // YYYY-MM-DD format for simple filtering
             required: true
         }
     },

@@ -80,12 +80,27 @@ export const userDataStore = {
 
     saveWearable: (data) => save(STORAGE_KEYS.WEARABLE, data),
 
+    // Clear all tasks
+    clearAllTasks: () => {
+        localStorage.removeItem(STORAGE_KEYS.DAILY_TASKS);
+        console.log('All tasks cleared from localStorage');
+    },
+
+    // Clear all data
+    clearAllData: () => {
+        Object.values(STORAGE_KEYS).forEach(key => {
+            localStorage.removeItem(key);
+        });
+        console.log('All user data cleared from localStorage');
+    },
+
     // Get all data for export/debug
     getAllData: () => ({
         profile: get(STORAGE_KEYS.USER_PROFILE),
         sleep: get(STORAGE_KEYS.SLEEP_ROUTINE),
         mobility: get(STORAGE_KEYS.MOBILITY),
         tasks: get(STORAGE_KEYS.TASK_PREFS),
-        checkins: get(STORAGE_KEYS.DAILY_CHECKINS)
+        checkins: get(STORAGE_KEYS.DAILY_CHECKINS),
+        dailyTasks: get(STORAGE_KEYS.DAILY_TASKS)
     })
 };

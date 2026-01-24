@@ -82,4 +82,30 @@ export const UserProfileService = {
     }
 };
 
+export const TaskService = {
+    // Get tasks for a specific date
+    getTasksByDate: async (date) => {
+        const response = await api.get(`/tasks/date/${date}`);
+        return response.data;
+    },
+
+    // Update task completion status
+    updateTaskStatus: async (taskId, completed) => {
+        const response = await api.patch(`/tasks/${taskId}/status`, { completed });
+        return response.data;
+    },
+
+    // Save AI-generated tasks to MongoDB
+    saveAITasks: async (date, tasks, replace = false) => {
+        const response = await api.post('/tasks/ai-sync', { date, tasks, replace });
+        return response.data;
+    },
+
+    // Get task statistics for last 7 days
+    getTaskStatistics: async () => {
+        const response = await api.get('/tasks/statistics');
+        return response.data;
+    }
+};
+
 export default api;

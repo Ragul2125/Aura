@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { UserProfileService } from "../services/api.js";
-// import { userDataStore } from "../utils/userDataStore.js";
+import { UserProfileService, TaskService } from "../services/api.js";
 import {
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
@@ -11,29 +10,52 @@ export default function HomePage() {
     const [checkIns, setCheckIns] = useState([]);
     const [greeting, setGreeting] = useState("Hello");
     const [chartData, setChartData] = useState([]);
-
-    // Sample tasks - in real app, these would come from TaskPreference schema
-    const [tasks, setTasks] = useState([
-        { id: 1, text: "Morning Meditation", completed: false, time: "8:00 AM" },
-        { id: 2, text: "Hydrate (2L)", completed: false, time: "All Day" },
-        { id: 3, text: "Deep Work Session", completed: false, time: "10:00 AM" },
-        { id: 4, text: "Read for 15 mins", completed: false, time: "9:00 PM" },
-    ]);
+    const [tasks, setTasks] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [latestCheckIn, setLatestCheckIn] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
+            setLoading(true);
             try {
+                // Fetch profile
                 const response = await UserProfileService.getProfile();
                 if (response.success) {
                     setProfile(response.data.profile);
                 }
 
+                // Fetch check-ins
                 const checkinsResponse = await UserProfileService.getDailyCheckIns();
                 if (checkinsResponse.success) {
                     setCheckIns(checkinsResponse.data);
+                    // Get latest check-in for energy/sleep stats
+                    if (checkinsResponse.data.length > 0) {
+                        setLatestCheckIn(checkinsResponse.data[0]);
+                    }
+                }
+
+                // Fetch today's tasks
+                const today = new Date().toISOString().split('T')[0];
+                const tasksResponse = await TaskService.getTasksByDate(today);
+                if (tasksResponse.success) {
+                    const formattedTasks = tasksResponse.data.map(task => ({
+                        id: task._id,
+                        text: task.task,
+                        completed: task.completed,
+                        time: task.time
+                    }));
+                    setTasks(formattedTasks);
+                }
+
+                // Fetch task statistics for chart
+                const statsResponse = await TaskService.getTaskStatistics();
+                if (statsResponse.success) {
+                    setChartData(statsResponse.data);
                 }
             } catch (error) {
                 console.error("Failed to load home data", error);
+            } finally {
+                setLoading(false);
             }
         };
         fetchData();
@@ -43,26 +65,27 @@ export default function HomePage() {
         if (hour < 12) setGreeting("Good Morning");
         else if (hour < 18) setGreeting("Good Afternoon");
         else setGreeting("Good Evening");
-
-        // Prepare Chart Data (Tasks Completed per Day - Mock)
-        // In a real app, you'd aggregate this from a Tasks schema history
-        const mockTaskHistory = [
-            { name: 'Mon', tasks: 3, total: 5 },
-            { name: 'Tue', tasks: 5, total: 6 },
-            { name: 'Wed', tasks: 4, total: 5 },
-            { name: 'Thu', tasks: 6, total: 8 },
-            { name: 'Fri', tasks: 4, total: 6 },
-            { name: 'Sat', tasks: 2, total: 4 },
-            { name: 'Sun', tasks: 3, total: 5 },
-        ];
-
-        setChartData(mockTaskHistory);
     }, []);
 
-    const toggleTask = (id) => {
-        setTasks(tasks.map(t =>
-            t.id === id ? { ...t, completed: !t.completed } : t
-        ));
+    const toggleTask = async (id) => {
+        try {
+            // Optimistically update UI
+            const updatedTasks = tasks.map(t =>
+                t.id === id ? { ...t, completed: !t.completed } : t
+            );
+            setTasks(updatedTasks);
+
+            // Update in backend
+            const task = tasks.find(t => t.id === id);
+            await TaskService.updateTaskStatus(id, !task.completed);
+        } catch (error) {
+            console.error("Failed to update task:", error);
+            // Revert on error
+            const revertedTasks = tasks.map(t =>
+                t.id === id ? { ...t, completed: !t.completed } : t
+            );
+            setTasks(revertedTasks);
+        }
     };
 
     const completionRate = Math.round((tasks.filter(t => t.completed).length / tasks.length) * 100);
@@ -172,18 +195,22 @@ export default function HomePage() {
             <div className="grid grid-cols-2 gap-4">
                 <div className="bg-orange-50 p-4 rounded-3xl">
                     <div className="flex items-center gap-2 mb-2 text-orange-600">
-                        <Sun size={18} />
-                        <span className="font-bold text-sm">Morning</span>
+                        <Zap size={18} />
+                        <span className="font-bold text-sm">Energy</span>
                     </div>
-                    <p className="text-2xl font-bold text-gray-800">High</p>
-                    <p className="text-xs text-gray-500">Predicted Energy</p>
+                    <p className="text-2xl font-bold text-gray-800">
+                        {latestCheckIn ? `${latestCheckIn.energyLevel}/5` : 'N/A'}
+                    </p>
+                    <p className="text-xs text-gray-500">Latest Check-in</p>
                 </div>
                 <div className="bg-indigo-50 p-4 rounded-3xl">
                     <div className="flex items-center gap-2 mb-2 text-indigo-600">
                         <Moon size={18} />
                         <span className="font-bold text-sm">Sleep</span>
                     </div>
-                    <p className="text-2xl font-bold text-gray-800">7.5h</p>
+                    <p className="text-2xl font-bold text-gray-800">
+                        {latestCheckIn ? latestCheckIn.sleepQuality : 'N/A'}
+                    </p>
                     <p className="text-xs text-gray-500">Last Night</p>
                 </div>
             </div>
